@@ -1,0 +1,145 @@
+confirm("Are you sure you want to delete?")
+$(document).ready(function(){
+
+    $(".mudaTela").click(function(){
+        mudaTela( $(this), $(this).attr("nova"), $(this).attr("animacao"), $(this).attr("tempoAnimacao") );
+    });
+
+    $("a.opcoes").click(function(e){
+        e.preventDefault();
+        $("div.opcoes").slideToggle(500);
+    });
+
+    $(".calendario .marcado").click(function(){
+        mostraMsgMes($(this).attr("value"));
+    });
+
+    const mudaTela = ( atual, nova = null, animacao = "fade", tempoAnimacao = 900 ) => {
+
+        // define a nova tela
+        if(!nova){
+            nova = parseInt(atual.parent().attr("id").split("tela")[1])+1;
+        }
+
+        if(animacao == "fade"){
+            $("#tela"+(nova-1)).fadeOut(tempoAnimacao);
+            setTimeout(() => {
+                $("#tela"+nova).fadeIn(tempoAnimacao)
+            }, tempoAnimacao);
+        }else{
+            $("#tela"+(nova-1)).hide(tempoAnimacao);
+            $("#tela"+nova).show(tempoAnimacao);
+        }
+
+        if($("#tela"+nova).hasClass("temporizado")){
+            $("#tela"+nova+" div").hide();
+            telaTemporizada(nova, 0);
+        }
+
+        verificaFundo(nova);
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        if(nova == 5){
+            var audio = new Audio('assets/musica.mp3');
+            audio.volume = 0.1;
+            audio.play();
+        }
+        
+    }
+
+    const telaTemporizada = ( nTela, contador ) =>{
+
+        const tela = $("#tela"+nTela+" div:eq("+contador+")");
+        const temporizador = 500;
+        const temporizadorPrimeiraTela = (contador==0?$("#tela"+nTela).attr("tempo"):temporizador);
+
+        setTimeout(() => {
+            tela.fadeIn(temporizador);
+
+            setTimeout(() => {
+                tela.fadeOut(temporizador);
+                if(tela.attr("final") == "true"){
+                    mudaTela(null, nTela+1, "fade", 900);
+                    verificaFundo(nTela+1);
+                }else{
+                    telaTemporizada(nTela, contador+1);
+                }
+
+            }, tela.attr("tempo") );
+
+        }, temporizadorPrimeiraTela);
+        
+    }
+
+    const verificaFundo = (nTela) =>{
+
+        const fundo = $("#tela"+nTela).attr("fundo");
+        const tempo = $("#tela"+nTela).attr("tempo");
+
+        if(fundo){
+            $("body").attr("class", fundo);            
+        }
+        
+    }
+
+    const mostraMsgMes = (texto) =>{
+
+        let titulo;
+        let mensagem;
+
+        switch(texto){
+            case "30/4": titulo = "30 de Abril de 2023"; mensagem = "<p>Esse dia eu vou levar ele pra sempre, diria que foi o mais certeiro da minha vida, o dia em que saímos pela primeira vez. Você estava linda, usando um conjunto da CK e com uma calça bem bonita. Lembro até hoje o frio na barriga que me deu quando eu te vi subindo aquela escada rolante, fiquei com muito medo de nossas ideias não baterem e ficar um date meio chato, pela nossa sorte conseguimos desenrolar muito bem. Comemos japa no Mar e Brasa e a todo momento eu ainda não conseguia acreditar que estava ali com você, você estava incrível e aquele momento foi mágico pra mim e tive a certeza disso quando demos o nosso primeiro beijo naquela arquibancada estranha de frente a praia (kkkkkkk) e que beijo bom ❤️. E de pensar que eu quase desisti no dia de ir para outra cidade que eu nem conhecia só para ver uma menina... Ainda bem que eu fui.</p>";break;
+            case "5/5": titulo = "05 de Maio de 2023"; mensagem = "<p>Confesso que esse dia eu morri de medo de tomar um bolo seu, tinhamos combinado de se ver no barzinho da faculdade e no dia você simplesmente SUMIU e não falou mais nada e eu fui do mesmo jeito, deixei meu orgulho de lado e te mandei mensagem quando cheguei na faculdade, você tinha ido, te esperei sair da aula e fomos até aquele bar mixuruca. Tomamos bastante skol beats, conversamos bastante sobre tudo e você foi embora comigo de ônibus. Demos uns beijos muito gostosos no ônibus, ficamos abraçados e foi esse dia que eu te contei que eu tinha me secado com o secador kkkkkkkkkk e você riu bastante, fui embora pra casa todo feliz.</p>";break;
+            case "12/5": titulo = "12 de Maio de 2023"; mensagem = "<p>Te fiz matar aula outra sexta-feira kkkkk e fomos outra vez no barzinho da faculdade, eu nem estava acreditando que eu estava indo pra faculdade sem ter aula só para te ver. Quando eu te vi, minha nossa senhora, você tava vestindo uma calça legging e na parte de cima o conjunto da CK, QUE MULHER gostosa. Nesse dia a Amanda e a namorada dela também estavam lá, ficamos jogando sinuca (que desestre) e depois sentamos em uma mesa só nós para conversar. Papo vai, papo vem, saímos do bar para procurar um lugar para dar uns beijinhos kkkk e o resto você sabe. Esse dia você voltou comigo outra vez de ônibus e quando você desceu eu virei pra Amanda e falei 'caralho, to apaixonado'.</p>";break;
+            case "13/5": titulo = "13 de Maio de 2023"; mensagem = "<p>Esse dia eu já estava louco para te ver outra vez e você me chamou para ir tomar açaí no centro de Caraguá e minha nossa, que pessíma ideia kkkkkkk tava um frio absurdo. Você se lambuzou toda de açaí e depois fomos andar pela avenida até acharmos um lugar mais reservado, e esse foi o primeiro dia que eu peguei na sua mão para andarmos de mãos dadas. Paramos naquele gramado no meio do nada, sentamos e ficamos conversando e dando uns beijinhos. Confesso que esse dia, diria que foi a virada de chave e eu realmente senti que estava começando a gostar de você, lembro que falei brincando (mas na minha cabeça eu não queria que fosse brincadeira) se você aceitava a ser minha ficante séria kkkkk e você aceitou. Dei uma emocionada legal, ja tava todo apaixonado.</p>";break;
+            case "20/5": titulo = "29 de Maio de 2023"; mensagem = "<p>Eu tava todo bobinho, tinha chamado você pra ir assistir meu filme favorito e você aceitou. Lembro que esse dia eu fiquei todo envergonhado quando tava te esperando e você chegou de carro com sua mãe, ela me deu um tchauzinho e eu fiquei mega vermelho. Fomos no cinema, assistimos Velozes e Furiosos e o tempo passou tão rápido que na hora de ir embora eu queria ficar mais tempo junto. Tivemos a brilhante ideia de ir naquele pagode no sante com aquele povo animado kkkkkkkk e aquele dia a balada em si foi pessíma, mas pra mim foi incrivél. A gente dançou juntos, demos varios beijos, ficamos alegres. E antes de entrarmos na balada eu lembro de abrir meu coração pra você, disse oque eu estava sentindo e te perguntei se era pra continuarmos ou parar com a nossa relação. Você disse que estava na mesma sintonia e que era pra continuarmos. Esse dia eu fui dormir de coração quentinho.</p>";break;
+            case "25/5": titulo = "25 de Maio de 2023"; mensagem = "<p>Esse foi o dia que você disse que estava com saudades (eu fiquei MEGA feliz) e me levou para tomar chopp de vinho pela primeira vez no shopping em plena quinta-feira. Tomamos bastante chopp de vinho e decidimos descer até a praia, esse dia eu achei que a gente ia ser assaltado kkkkkkk que bairro estranho de noite. O dia em que eu conheci minha sogrinha, não acreditei quando ela parou o carro kkkkkk e desceu pra vir falar comigo, fiquei com muita vergonha, mas o papo foi bom, não tinha jeito melhor de conhecer sua mãe e suas irmãs.</p>";break;
+            case "30/5": titulo = "30 de Maio de 2023"; mensagem = "<p>Nesse dia você tinha vindo pra minha cidade ver seu pai no trabalho e fomos até a Rua da Praia matar a saudade, tomamos café na satelite e ficamos muito tempo conversando sobre todos os assuntos possiveís de frente ao mar, com aquele ventão kkkkk e esse foi o dia que você me contou que ia fazer sua cirurgia, eu não demonstrei mas fiquei mega preocupado. Quando eu cheguei em casa, contei isso pra minha avó e pedi para ela fazer uma oração pra você quando fosse o dia. Nesse dia eu ja estava completamente rendido e na minha cabeça só existia Isabella.</p>";break;
+            case "3/6": titulo = "03 de Junho de 2023"; mensagem = "<p>Esse dia eu te chamei para ir no anivérsario da Ana comigo, eu jurava que você não iria, mas você foi, e que desastre, achava que ia ser muito daora e tinha 5 pessoas kskskksks. Do mesmo jeito foi perfeito, bebemos um pouco, formamos uma bela dupla no beer pong e acho que esse foi o primeiro dia que eu soltei um pouco dos meus sentimentos pra você na brisa da bebida. Nesse dia eu ainda não consegui voltar pra casa e no café da manhã e contei pra minha melhor amiga tudo que eu estava sentindo por você, ela disse que tinha que ser você, pq eu nunca tinha falado isso de ninguém</p>";break;
+            case "10/6": titulo = "10 de Junho de 2023"; mensagem = "<p>Você veio pra casa do Balbino pra uma tentativa de churrasco e conheceu meus amigos. Esse dia pra mim foi perfeito, ficamos horas conversando sobre a gente e eu consegui abrir meu coração pra você, horas que pareceram minutos, diria que esse dia foi a virada de chave pra mim</p>";break;
+            case "12/6": titulo = "12 de Junho de 2023"; mensagem = "<p>12 de Junho, Dia dos namorados, esse dia eu acho que é oque eu mais amo da gente, você estava perfeita, com aquele vestido preto, só de lembrar minha nossa senhora. Eu estava muito feliz esse dia, a gente andando de mãos dadas na rua em pleno dia dos namorados, fomos jantar nossa comida favorita (você se acabando no hashi como sempre kkkkkkkkk) cara não tenho palavras, nunca vou esquecer desse dia na minha vida. De quebra ainda fomos na festinha que estava tendo na igreja e joguei bingo pela primeira vez. Oque eu senti esse dia não consigo expressar em palavras, até chorei escrevendo isso. Meu coração já era todo seu.</p>";break;
+            case "15/6": titulo = "15 de Junho de 2023"; mensagem = "<p>Dia do aniversário do Denys, confesso que fiquei muito entediado te esperando sozinho na faculdade kkkk mas nesse dia ai eu já fazia de tudo por você. Conheci sua familia quase inteira e você me apresentou como seu namorado pra eles. MEU CORAÇÃO EXPLODIU DE AMOR PAPO RETO ESSE DIA FIQUEI MT EMOCIONADO, quando isso aconteceu eu sabia que tinha dado bom e que a gente iria dar certo. Tomamos uns drinks (detalhe era uma quinta-feira) e de quebra você veio me trazer em casa de madrugada junto com sua mãe, fiquei muito feliz.</p>";break;
+            case "16/6": titulo = "16 de Junho de 2023"; mensagem = "<p>Ai ai... o que dizer desse dia? a primeira vez que eu fui na sua casa, parece algo bobo, mas isso pra mim é muito significado, isso demonstra que você me queria ali, jogamos com as meninas e assistimos filme de terror. Esse dia fiquei com o coração quentinho.</p>";break;
+            case "19/6": titulo = "19 de Junho de 2023"; mensagem = "<p>Primeiro dia que fui te ver pós sua cirurgia. Mesmo cheia de dor você fazia questão de me dar atenção e estar comigo (Acho que nesse periodo da sua recuperação eu te enchi muito o saco kkkkkk). Eu ficava reparando em você de longe e você tava sentindo muita dor, meu coração estava dolorido de te ver daquele jeito, mas eu sabia que ia passar. Eu poderia citar todos os dias que fui te visitar nesse tempo mas foram tantos que vou pular pra vez que voltamos a sair.</p>";break;
+            case "30/6": titulo = "30 de Junho de 2023"; mensagem = "<p>Esse dia fomos na apresentação de ballet da Laura, nunca imaginaria que eu fosse numa coisa chata dessas kkkk mas eu não me importava, só queria estar com você. E esse dia foi oque eu mais dei risada com sua avó kkkkkkkkkkkk</p>";break;
+            case "5/7": titulo = "05 de Julho de 2023"; mensagem = "<p>Meio bobo esse dia, o dia que a gente assistiu o jogo da ida São Paulo x Palmeiras, em jogo grande assim eu sempre fico muito nervoso e ansioso, e assistir com você me deu uma paz e um alívio imenso. Fora que você ainda vestiu a camisa do maior do Brasil e ainda deu sorte pro meu tricolor</p>";break;
+            case "7/7": titulo = "07 de Julho de 2023"; mensagem = "<p>7 de Julho de 2023, o dia eu que eu tive coragem de olhar nos seus olhos e dizer eu te amo. Isso já estava engasgado na minha garganta a um tempo e eu tava louco pra te falar isso. Meu amor por você ja era o mais puro e verdadeiro e eu ja tinha total certeza de que eu estava falando e certeza de que era você que eu queria na minha vida. EU TE AMO TE AMO TE AMO!.</p>";break;
+            case "8/7": titulo = "08 de Julho de 2023"; mensagem = "<p>A primeira viagem que fizemos juntos, você conheceu minha familia toda e eu fiquei muito feliz que todo mundo gostou de você (como não gostar tambem né) foi meio chatinha por motivos de não ter muita coisa pra fazer no meio do nada mas só de você ter ido comigo ja bastava. A primeira noite que dormimos juntinhos e cara, nessa hora te olhando de olhinhos fechados minha mente explodiu de amor e eu percebi o tanto que eu tinha vencido (Mesmo você roncando pra cacete). Acordar e te ver ali, certamente é uma das coisas que nunca vou esquecer na minha vida, você saindo do banho toda cheirosa, a gente jogando uno com todo mundo, você interagindo com todo mundo, eu diria que esse foi o final de semana perfeito. Isabella, são tantos momentos que eu consigo lembrar de todos em mínimos detalhes. Eu queria que você soubesse que você é a mulher da minha vida e eu vou cuidar de você pra sempre. Eu te amo muito minha princesinha</p>";break;
+            case "11/7": titulo = "11 de Julho de 2023"; mensagem = "<p>Primeira vez que você veio em casa, foi tudo, você conheceu o tio que eu mais gosto e minha avó, eles gostaram bastante de você e no dia seguinte o Adilson virou pra mim e disse 'Você encontrou uma menina incrivel'. Ouvir dele disso não tem preço, fiz a escolha certa.</p>";break;
+            case "20/7": titulo = "20 de Julho de 2023"; mensagem = "<section class='text-center mt-5 mb-5'><p><strong>O dia em que ela disse<br><span class='letra2 letra-vermelha'>SIM</span></strong></p></section>";break;
+            case "final": titulo = "20 de Junho de 2023"; mensagem = "<section class='text-center mt-5 mb-5'><p><strong>O dia em que ela disse<br><span class='letra2 letra-vermelha'>SIM</span></strong></p></section>";break;
+        }
+
+        mostraPopUp(true, titulo, mensagem);
+        telaFinal = (texto=="final"?true:false);
+    }
+
+    
+
+});
+
+let telaFinal = false;
+
+const mostraPopUp = (mostrar, titulo = "Título de testes", mensagem = "Mensagem de teste...") =>{
+
+    if(mostrar){
+        $("html, body").animate({ scrollTop: $(".pop-up")[0].offsetTop }, "smooth");
+        $(".pop-up").fadeIn(500);
+        $(".pop-up h1").html(titulo);
+        $(".pop-up div").html(mensagem);
+        $(".container").css("opacity", "0.5");
+    }else{
+        $(".pop-up").fadeOut(500);
+        $(".container").css("opacity", "1");
+
+        if(telaFinal){
+            $("#tela19").fadeOut(4000);
+            setTimeout(() => {
+                $("#tela20").fadeIn(6500);
+                $("body").attr("class", "fundo6");    
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+            }, 4000);
+        }
+
+    }
+
+}
